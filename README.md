@@ -1,4 +1,4 @@
-#README#
+# README #
 
 ## simpleifdef Sublime Text 3 plugin ##
 
