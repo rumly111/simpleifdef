@@ -18,44 +18,30 @@ class IfdefHighlighter(sublime_plugin.EventListener):
 	def __init__(self, *args, **kw):
 		super().__init__(*args,**kw)
 		self._groups = dict()
-		self._regions = dict()
+		self._regions = []
 
 	def _rescan(self, view):
 		stack = []
-		i = -1
-		R = sublime.Region(0, view.size())
 		self._groups.clear()
-		self._regions.clear()
+		self._regions = view.find_by_selector("meta.preprocessor keyword.control.import")
 
-		for line in view.lines(R):
-			i += 1
-			la = line.a
-
-			while view.substr(la) in (' ', '\t'):
-				la += 1
-
-			if view.substr(la) != '#':
-				continue
-
-			r = view.find('#[a-z]+', la)
-			if not r:
-				continue
-
-			self._regions[i] = r
+		for r in self._regions:
 			s = view.substr(r)
 
 			if s.startswith('#if'):
-				stack.append({i})
+				stack.append({(r.a, r.b)})  # Region is not hashable
 			elif s in ('#elif', '#else'):
 				if len(stack) > 0:
-					stack[-1].add(i)
+					stack[-1].add((r.a, r.b))
 			elif s == '#endif':
 				if len(stack) > 0:
-					ll = stack.pop()
-					ll.add(i)
-					for l in ll:
-						self._groups[l] = ll
-
+					pset = stack.pop()
+					pset.add((r.a, r.b))
+					rlist = []
+					for a, b in pset:
+						rlist.append(sublime.Region(a, b))
+					for p in pset:
+						self._groups[p] = rlist
 
 	def on_modified(self, view):
 		self._rescan(view)
@@ -64,12 +50,14 @@ class IfdefHighlighter(sublime_plugin.EventListener):
 		self._rescan(view)
 
 	def on_selection_modified(self, view):
-		# NOTE: can sel() return empty list?
-		row, _ = view.rowcol(view.sel()[0].a)
-		if row in self._groups:
-			regs = []
-			for roww in self._groups[row]:
-				regs.append(self._regions[roww])
-			view.add_regions('ifdef',regs,'comment','',sublime.HIDE_ON_MINIMAP)
-		else:
-			view.erase_regions('ifdef')
+		# NOTE: do I need to erase on each update?
+		view.erase_regions('ifdef')
+		cursor = view.sel()[0].a
+
+		for r in self._regions:
+			if r.contains(cursor):
+				rtup = r.a, r.b
+				if rtup in self._groups:
+					view.add_regions('ifdef',self._groups[rtup],
+						'keyword','',sublime.HIDE_ON_MINIMAP)
+					break
