@@ -22,23 +22,27 @@ class IfdefHighlighter(sublime_plugin.EventListener):
 		self._regions = []
 
 	def _rescan(self, view):
+		self._groups.clear()
+		self._regions.clear()
 		stack = []
 		errors = []
-		self._groups.clear()
-		self._regions = view.find_by_selector("meta.preprocessor keyword.control.import")
+		regions = view.find_by_selector("meta.preprocessor keyword.control.import")
 
-		for r in self._regions:
+		for r in regions:
 			s = view.substr(r)
 
 			if s.startswith('#if'):
+				self._regions.append(r)
 				stack.append({(r.a, r.b)})  # Region is not hashable
 			elif s in ('#elif', '#else'):
 				if len(stack) > 0:
+					self._regions.append(r)
 					stack[-1].add((r.a, r.b))
 				else:
 					errors.append(r)
 			elif s == '#endif':
 				if len(stack) > 0:
+					self._regions.append(r)
 					pset = stack.pop()
 					pset.add((r.a, r.b))
 					rlist = []
