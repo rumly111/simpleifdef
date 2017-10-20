@@ -1,7 +1,7 @@
 # Sublime Text 3 plugin for highlighting #ifdef-#else-#endif
 # in source code.
 # Author: Joseph Botosh <rumly111@gmail.com>
-# Licence: GPL
+# License: GPL
 
 import sublime
 import sublime_plugin

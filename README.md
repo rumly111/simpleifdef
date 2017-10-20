@@ -16,7 +16,7 @@ It now supports simple error highlighting.
 Via Package Control, or copy simpleifdef.py to 
 ~/.config/sublime-text-3/Packages/User/
 
-## Licence ##
+## License ##
 GNU General Public License version 2
 
 ## Project GitHub ##
