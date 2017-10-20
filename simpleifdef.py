@@ -11,8 +11,9 @@ class IfdefHighlighter(sublime_plugin.EventListener):
 	'''
 	Scans whole text and searches for matching
 	#ifdef-#else-#endif. Remembers their position.
-	Then, when the cursor enters line with #ifdef/#else/#endif,
-	all corresponding lines are highlighted
+	Then, when the cursor is on #ifdef/#else/#endif,
+	all corresponding keywords are highlighted.
+	Supports simple error checking
 	'''
 
 	def __init__(self, *args, **kw):
@@ -22,6 +23,7 @@ class IfdefHighlighter(sublime_plugin.EventListener):
 
 	def _rescan(self, view):
 		stack = []
+		errors = []
 		self._groups.clear()
 		self._regions = view.find_by_selector("meta.preprocessor keyword.control.import")
 
@@ -33,6 +35,8 @@ class IfdefHighlighter(sublime_plugin.EventListener):
 			elif s in ('#elif', '#else'):
 				if len(stack) > 0:
 					stack[-1].add((r.a, r.b))
+				else:
+					errors.append(r)
 			elif s == '#endif':
 				if len(stack) > 0:
 					pset = stack.pop()
@@ -42,6 +46,15 @@ class IfdefHighlighter(sublime_plugin.EventListener):
 						rlist.append(sublime.Region(a, b))
 					for p in pset:
 						self._groups[p] = rlist
+				else:
+					errors.append(r)
+
+		for p in stack:
+			errors.extend(sublime.Region(t[0], t[1]) for t in p)
+
+		view.erase_regions('ifdeferror')
+		if errors:
+			view.add_regions('ifdeferror', errors, 'invalid', '', 0)
 
 	def on_modified(self, view):
 		self._rescan(view)
