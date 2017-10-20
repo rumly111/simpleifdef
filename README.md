@@ -8,14 +8,16 @@ position. Then, if the cursor enters one of those lines,
 all other corresponding lines are highlighted. Keywords
  #ifdef, #ifndef, #if, #else, #elif, #endif are supported
 
-![screenshot](https://github.com/rumly111/simpleifdef/raw/master/2017-10-19_17-19-06.gif)
+![screenshot](https://github.com/rumly111/simpleifdef/raw/master/screenshot.gif)
 
-I tried to make it as simple as possible, so there is
-(almost) no error checking.
+It now supports simple error highlighting.
 
 ## Installation ##
 Via Package Control, or copy simpleifdef.py to 
 ~/.config/sublime-text-3/Packages/User/
+
+## Licence ##
+GNU General Public License version 2
 
 ## Project GitHub ##
 https://github.com/rumly111/simpleifdef
