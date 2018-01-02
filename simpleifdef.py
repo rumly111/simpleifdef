@@ -69,7 +69,10 @@ class IfdefHighlighter(sublime_plugin.EventListener):
 	def on_selection_modified(self, view):
 		# NOTE: do I need to erase on each update?
 		view.erase_regions('ifdef')
-		cursor = view.sel()[0].a
+		try:
+			cursor = view.sel()[0].a
+		except IndexError:
+			return
 
 		for r in self._regions:
 			if r.contains(cursor):
