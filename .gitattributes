@@ -5,3 +5,6 @@
 
 ## images
 *.gif
+
+## test files
+test.cpp
