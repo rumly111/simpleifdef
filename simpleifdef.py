@@ -34,6 +34,9 @@ class IfdefHighlighter(sublime_plugin.EventListener):
 		for r in regions:
 			s = view.substr(r)
 
+			if s.startswith('# '):
+				s = s.replace(' ', '')
+
 			if s.startswith('#if'):
 				self._regions.append(r)
 				stack.append({(r.a, r.b)})  # Region is not hashable
