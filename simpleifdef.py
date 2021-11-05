@@ -22,6 +22,9 @@ class IfdefHighlighter(sublime_plugin.EventListener):
 		self._regions = []
 
 	def _rescan(self, view):
+		if not view.match_selector(0, "source.c | source.c++ | source.objc | source.objc++"):
+			return
+
 		self._groups.clear()
 		self._regions.clear()
 		stack = []
