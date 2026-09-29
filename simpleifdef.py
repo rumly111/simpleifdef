@@ -29,7 +29,7 @@ class IfdefHighlighter(sublime_plugin.EventListener):
 		self._regions.clear()
 		stack = []
 		errors = []
-		regions = view.find_by_selector("meta.preprocessor keyword.control.import")
+		regions = view.find_by_selector("meta.preprocessor keyword.control.directive.conditional")
 
 		for r in regions:
 			s = view.substr(r)
