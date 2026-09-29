@@ -1,6 +1,6 @@
 # README #
 
-## simpleifdef Sublime Text 3 plugin ##
+## simpleifdef Sublime Text 4 plugin ##
 
 This plugin automatically scans current file, searches
 for matching #ifdef-#else-#endif and remembers their
@@ -14,7 +14,7 @@ It now supports simple error highlighting.
 
 ## Installation ##
 Via Package Control, or copy simpleifdef.py to 
-~/.config/sublime-text-3/Packages/User/
+~/.config/sublime-text/Packages/User/
 
 ## License ##
 GNU General Public License version 2
